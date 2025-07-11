@@ -1,0 +1,156 @@
+//
+//  MenuBarManager.swift
+//  ToggleWifi
+//
+//  Created by Fahid Nasir on 7/11/25.
+//
+
+import Cocoa
+import SwiftUI
+import UserNotifications
+
+class MenuBarManager: NSObject, NetworkMonitorDelegate {
+    private var statusItem: NSStatusItem?
+    private var wifiManager: WiFiManager
+    private var networkMonitor: NetworkMonitor
+    
+    @AppStorage("autoWiFiEnabled") private var autoWiFiEnabled = true
+    @AppStorage("launchAtLogin") private var launchAtLogin = false
+    
+    init(wifiManager: WiFiManager, networkMonitor: NetworkMonitor) {
+        self.wifiManager = wifiManager
+        self.networkMonitor = networkMonitor
+        super.init()
+    }
+    
+    func setupMenuBar() {
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        
+        if let button = statusItem?.button {
+            updateIcon()
+            button.action = #selector(statusItemClicked)
+            button.sendAction(on: [.leftMouseUp, .rightMouseUp])
+        }
+        
+        setupMenu()
+    }
+    
+    @objc private func statusItemClicked() {
+        guard let event = NSApp.currentEvent else { return }
+        
+        if event.type == .leftMouseUp {
+            toggleWiFiManually()
+        } else if event.type == .rightMouseUp {
+            statusItem?.popUpMenu(createMenu())
+        }
+    }
+    
+    private func setupMenu() {
+        statusItem?.menu = createMenu()
+    }
+    
+    private func createMenu() -> NSMenu {
+        let menu = NSMenu()
+        
+        let autoToggleItem = NSMenuItem(title: "Enable Auto Wi-Fi", action: #selector(toggleAutoWiFi), keyEquivalent: "")
+        autoToggleItem.target = self
+        autoToggleItem.state = autoWiFiEnabled ? .on : .off
+        menu.addItem(autoToggleItem)
+        
+        menu.addItem(NSMenuItem.separator())
+        
+        let settingsItem = NSMenuItem(title: "Settings...", action: #selector(openSettings), keyEquivalent: ",")
+        settingsItem.target = self
+        menu.addItem(settingsItem)
+        
+        let aboutItem = NSMenuItem(title: "About ToggleWiFi", action: #selector(showAbout), keyEquivalent: "")
+        aboutItem.target = self
+        menu.addItem(aboutItem)
+        
+        menu.addItem(NSMenuItem.separator())
+        
+        let quitItem = NSMenuItem(title: "Quit", action: #selector(quit), keyEquivalent: "q")
+        quitItem.target = self
+        menu.addItem(quitItem)
+        
+        return menu
+    }
+    
+    @objc private func toggleAutoWiFi() {
+        autoWiFiEnabled.toggle()
+        updateIcon()
+        setupMenu()
+    }
+    
+    @objc private func openSettings() {
+        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+    
+    @objc private func showAbout() {
+        let alert = NSAlert()
+        alert.messageText = "ToggleWiFi"
+        alert.informativeText = "Version 1.0\nAutomatically toggles Wi-Fi based on Ethernet status"
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
+    }
+    
+    @objc private func quit() {
+        NSApp.terminate(nil)
+    }
+    
+    private func toggleWiFiManually() {
+        let currentState = wifiManager.isWiFiEnabled()
+        wifiManager.setWiFiEnabled(!currentState)
+        updateIcon()
+        
+        let message = currentState ? "Wi-Fi turned off" : "Wi-Fi turned on"
+        showNotification(title: "Wi-Fi Status", message: message)
+    }
+    
+    private func updateIcon() {
+        let wifiEnabled = wifiManager.isWiFiEnabled()
+        let iconName: String
+        
+        if !autoWiFiEnabled {
+            iconName = "wifi.exclamationmark"
+        } else if wifiEnabled {
+            iconName = "wifi"
+        } else {
+            iconName = "wifi.slash"
+        }
+        
+        statusItem?.button?.image = NSImage(systemSymbolName: iconName, accessibilityDescription: nil)
+    }
+    
+    private func showNotification(title: String, message: String) {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = message
+        content.sound = .default
+        
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(request)
+    }
+    
+    // MARK: - NetworkMonitorDelegate
+    
+    func ethernetStatusChanged(isConnected: Bool) {
+        guard autoWiFiEnabled else { return }
+        
+        if isConnected {
+            if wifiManager.isWiFiEnabled() {
+                wifiManager.setWiFiEnabled(false)
+                showNotification(title: "Ethernet Connected", message: "Wi-Fi turned off")
+            }
+        } else {
+            if !wifiManager.isWiFiEnabled() {
+                wifiManager.setWiFiEnabled(true)
+                showNotification(title: "Ethernet Disconnected", message: "Wi-Fi turned on")
+            }
+        }
+        
+        updateIcon()
+    }
+}
