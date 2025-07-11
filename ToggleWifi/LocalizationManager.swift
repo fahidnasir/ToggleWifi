@@ -18,7 +18,7 @@ class LocalizationManager: ObservableObject {
         if let savedLanguage = UserDefaults.standard.string(forKey: "selectedLanguage") {
             currentLanguage = savedLanguage
         } else {
-            currentLanguage = Locale.current.languageCode ?? "en"
+            currentLanguage = Locale.current.language.languageCode?.identifier ?? "en"
         }
         setLanguage(currentLanguage)
     }
@@ -53,7 +53,7 @@ extension Bundle {
         }
     }
     
-    class AnyLanguageBundle: Bundle {
+    class AnyLanguageBundle: Bundle, @unchecked Sendable {
         override func localizedString(forKey key: String, value: String?, table tableName: String?) -> String {
             return Bundle.bundle.localizedString(forKey: key, value: value, table: tableName)
         }
