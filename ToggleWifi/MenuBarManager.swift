@@ -10,12 +10,16 @@ import SwiftUI
 import UserNotifications
 
 class MenuBarManager: NSObject, NetworkMonitorDelegate {
-    private var statusItem: NSStatusItem?
     private var wifiManager: WiFiManager
     private var networkMonitor: NetworkMonitor
+
+    private var statusItem: NSStatusItem?
+    private var settingsWindow: NSWindow?
     
-    @AppStorage("autoWiFiEnabled") private var autoWiFiEnabled = true
-    @AppStorage("launchAtLogin") private var launchAtLogin = false
+    @AppStorage("autoWiFiEnabled")
+    private var autoWiFiEnabled = true
+    @AppStorage("launchAtLogin")
+    private var launchAtLogin = false
     
     init(wifiManager: WiFiManager, networkMonitor: NetworkMonitor) {
         self.wifiManager = wifiManager
@@ -41,7 +45,8 @@ class MenuBarManager: NSObject, NetworkMonitorDelegate {
         if event.type == .leftMouseUp {
             toggleWiFiManually()
         } else if event.type == .rightMouseUp {
-            statusItem?.popUpMenu(createMenu())
+            // For right-click, let the menu handle itself
+            return
         }
     }
     
@@ -83,7 +88,33 @@ class MenuBarManager: NSObject, NetworkMonitorDelegate {
     }
     
     @objc private func openSettings() {
-        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+        if settingsWindow == nil {
+            let settingsView = SettingsView()
+            let hostingController = NSHostingController(rootView: settingsView)
+            
+            settingsWindow = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 400, height: 300),
+                styleMask: [.titled, .closable, .miniaturizable],
+                backing: .buffered,
+                defer: false
+            )
+            
+            settingsWindow?.title = "ToggleWiFi Settings"
+            settingsWindow?.contentViewController = hostingController
+            settingsWindow?.center()
+            settingsWindow?.isReleasedWhenClosed = false
+            
+            // Handle window closing
+            NotificationCenter.default.addObserver(
+                forName: NSWindow.willCloseNotification,
+                object: settingsWindow,
+                queue: nil
+            ) { [weak self] _ in
+                self?.settingsWindow = nil
+            }
+        }
+        
+        settingsWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
     
