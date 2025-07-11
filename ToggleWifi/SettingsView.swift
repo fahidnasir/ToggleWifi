@@ -11,8 +11,14 @@ import ServiceManagement
 struct SettingsView: View {
     @AppStorage("autoWiFiEnabled") private var autoWiFiEnabled = true
     @AppStorage("launchAtLogin") private var launchAtLogin = false
-    @StateObject private var networkMonitor = NetworkMonitor()
-    @StateObject private var wifiManager = WiFiManager()
+    
+    @ObservedObject var networkMonitor: NetworkMonitor
+    @ObservedObject var wifiManager: WiFiManager
+    
+    init(networkMonitor: NetworkMonitor, wifiManager: WiFiManager) {
+        self.networkMonitor = networkMonitor
+        self.wifiManager = wifiManager
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -39,14 +45,14 @@ struct SettingsView: View {
                 
                 HStack {
                     Text("Ethernet:")
-                    Text(networkMonitor.isEthernetCurrentlyConnected() ? "Connected" : "Disconnected")
-                        .foregroundColor(networkMonitor.isEthernetCurrentlyConnected() ? .green : .red)
+                    Text(networkMonitor.isEthernetConnected ? "Connected" : "Disconnected")
+                        .foregroundColor(networkMonitor.isEthernetConnected ? .green : .red)
                 }
                 
                 HStack {
                     Text("Wi-Fi:")
-                    Text(wifiManager.isWiFiEnabled() ? "On" : "Off")
-                        .foregroundColor(wifiManager.isWiFiEnabled() ? .green : .red)
+                    Text(wifiManager.isWiFiCurrentlyEnabled ? "On" : "Off")
+                        .foregroundColor(wifiManager.isWiFiCurrentlyEnabled ? .green : .red)
                 }
             }
             
@@ -54,6 +60,10 @@ struct SettingsView: View {
         }
         .padding()
         .frame(width: 400, height: 300)
+        .onAppear {
+            // Force refresh the WiFi status when the view appears
+            _ = wifiManager.isWiFiEnabled()
+        }
     }
     
     private func setLaunchAtLogin(enabled: Bool) {
@@ -70,5 +80,5 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView()
+    SettingsView(networkMonitor: NetworkMonitor(), wifiManager: WiFiManager())
 }

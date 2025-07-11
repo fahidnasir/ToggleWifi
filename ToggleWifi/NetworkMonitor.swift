@@ -17,7 +17,7 @@ class NetworkMonitor: ObservableObject {
     private let queue = DispatchQueue(label: "NetworkMonitor")
     weak var delegate: NetworkMonitorDelegate?
     
-    private var isEthernetConnected = false
+    @Published var isEthernetConnected = false
     
     func startMonitoring() {
         monitor.pathUpdateHandler = { [weak self] path in

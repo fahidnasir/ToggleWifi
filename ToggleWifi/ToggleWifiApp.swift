@@ -13,7 +13,7 @@ struct ToggleWifiApp: App {
     
     var body: some Scene {
         WindowGroup {
-            SettingsView()
+            SettingsView(networkMonitor: NetworkMonitor(), wifiManager: WiFiManager())
         }
     }
 }

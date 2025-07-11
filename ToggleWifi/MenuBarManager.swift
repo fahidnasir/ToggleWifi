@@ -10,16 +10,13 @@ import SwiftUI
 import UserNotifications
 
 class MenuBarManager: NSObject, NetworkMonitorDelegate {
+    private var statusItem: NSStatusItem?
     private var wifiManager: WiFiManager
     private var networkMonitor: NetworkMonitor
-
-    private var statusItem: NSStatusItem?
     private var settingsWindow: NSWindow?
     
-    @AppStorage("autoWiFiEnabled")
-    private var autoWiFiEnabled = true
-    @AppStorage("launchAtLogin")
-    private var launchAtLogin = false
+    @AppStorage("autoWiFiEnabled") private var autoWiFiEnabled = true
+    @AppStorage("launchAtLogin") private var launchAtLogin = false
     
     init(wifiManager: WiFiManager, networkMonitor: NetworkMonitor) {
         self.wifiManager = wifiManager
@@ -89,7 +86,7 @@ class MenuBarManager: NSObject, NetworkMonitorDelegate {
     
     @objc private func openSettings() {
         if settingsWindow == nil {
-            let settingsView = SettingsView()
+            let settingsView = SettingsView(networkMonitor: networkMonitor, wifiManager: wifiManager)
             let hostingController = NSHostingController(rootView: settingsView)
             
             settingsWindow = NSWindow(

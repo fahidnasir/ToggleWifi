@@ -9,9 +9,11 @@ import Foundation
 
 class WiFiManager: ObservableObject {
     private var wifiInterface: String?
+    @Published var isWiFiCurrentlyEnabled = false
     
     init() {
         detectWiFiInterface()
+        updateWiFiStatus()
     }
     
     private func detectWiFiInterface() {
@@ -45,7 +47,13 @@ class WiFiManager: ObservableObject {
         }
     }
     
-    func isWiFiEnabled() -> Bool {
+    private func updateWiFiStatus() {
+        DispatchQueue.main.async {
+            self.isWiFiCurrentlyEnabled = self.checkWiFiEnabled()
+        }
+    }
+    
+    private func checkWiFiEnabled() -> Bool {
         guard let interface = wifiInterface else { return false }
         
         let task = Process()
@@ -63,6 +71,14 @@ class WiFiManager: ObservableObject {
         return output.contains("On")
     }
     
+    func isWiFiEnabled() -> Bool {
+        let enabled = checkWiFiEnabled()
+        DispatchQueue.main.async {
+            self.isWiFiCurrentlyEnabled = enabled
+        }
+        return enabled
+    }
+    
     func setWiFiEnabled(_ enabled: Bool) {
         guard let interface = wifiInterface else { return }
         
@@ -71,5 +87,10 @@ class WiFiManager: ObservableObject {
         task.arguments = ["-setairportpower", interface, enabled ? "on" : "off"]
         task.launch()
         task.waitUntilExit()
+        
+        // Update the published property after changing the state
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.updateWiFiStatus()
+        }
     }
 }
