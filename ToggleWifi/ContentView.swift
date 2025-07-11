@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var localizationManager = LocalizationManager.shared
+    
     var body: some View {
         VStack {
             Image(systemName: "wifi")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
-            Text("ToggleWiFi is running in the menu bar")
+            Text(localizationManager.localizedString("main.title"))
         }
         .padding()
     }

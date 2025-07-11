@@ -14,6 +14,12 @@ struct SettingsView: View {
     
     @ObservedObject var networkMonitor: NetworkMonitor
     @ObservedObject var wifiManager: WiFiManager
+    @StateObject private var localizationManager = LocalizationManager.shared
+    
+    private let availableLanguages = [
+        ("en", "language.english"),
+        ("de", "language.german")
+    ]
     
     init(networkMonitor: NetworkMonitor, wifiManager: WiFiManager) {
         self.networkMonitor = networkMonitor
@@ -22,36 +28,62 @@ struct SettingsView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("ToggleWiFi Settings")
+            Text(localizationManager.localizedString("settings.title"))
                 .font(.title2)
                 .bold()
             
             VStack(alignment: .leading, spacing: 12) {
-                Toggle("Enable Auto Wi-Fi Toggle", isOn: $autoWiFiEnabled)
-                    .help("Automatically turn Wi-Fi off when Ethernet is connected")
+                Toggle(localizationManager.localizedString("settings.autoWiFiToggle"), isOn: $autoWiFiEnabled)
+                    .help(localizationManager.localizedString("settings.autoWiFiHelp"))
                 
-                Toggle("Launch at Login", isOn: $launchAtLogin)
-                    .help("Start ToggleWiFi when you log in")
+                Toggle(localizationManager.localizedString("settings.launchAtLogin"), isOn: $launchAtLogin)
+                    .help(localizationManager.localizedString("settings.launchAtLoginHelp"))
                     .onChange(of: launchAtLogin) { oldValue, newValue in
                         setLaunchAtLogin(enabled: newValue)
                     }
+                
+                // Language Selection
+                HStack {
+                    Text(localizationManager.localizedString("settings.language"))
+                        .frame(width: 100, alignment: .leading)
+                    
+                    Picker("", selection: $localizationManager.currentLanguage) {
+                        ForEach(availableLanguages, id: \.0) { languageCode, localizedKey in
+                            Text(localizationManager.localizedString(localizedKey))
+                                .tag(languageCode)
+                        }
+                    }
+                    .pickerStyle(MenuPickerStyle())
+                    .frame(width: 120)
+                    .onChange(of: localizationManager.currentLanguage) { oldValue, newValue in
+                        localizationManager.setLanguage(newValue)
+                        // Notify other parts of the app about language change
+                        NotificationCenter.default.post(name: Notification.Name("LanguageChanged"), object: nil)
+                    }
+                    
+                    Spacer()
+                }
             }
             
             Divider()
             
             VStack(alignment: .leading, spacing: 8) {
-                Text("Status")
+                Text(localizationManager.localizedString("settings.status"))
                     .font(.headline)
                 
                 HStack {
-                    Text("Ethernet:")
-                    Text(networkMonitor.isEthernetConnected ? "Connected" : "Disconnected")
+                    Text(localizationManager.localizedString("settings.ethernet"))
+                    Text(networkMonitor.isEthernetConnected ?
+                         localizationManager.localizedString("settings.connected") :
+                         localizationManager.localizedString("settings.disconnected"))
                         .foregroundColor(networkMonitor.isEthernetConnected ? .green : .red)
                 }
                 
                 HStack {
-                    Text("Wi-Fi:")
-                    Text(wifiManager.isWiFiCurrentlyEnabled ? "On" : "Off")
+                    Text(localizationManager.localizedString("settings.wifi"))
+                    Text(wifiManager.isWiFiCurrentlyEnabled ?
+                         localizationManager.localizedString("settings.on") :
+                         localizationManager.localizedString("settings.off"))
                         .foregroundColor(wifiManager.isWiFiCurrentlyEnabled ? .green : .red)
                 }
             }
@@ -59,9 +91,8 @@ struct SettingsView: View {
             Spacer()
         }
         .padding()
-        .frame(width: 400, height: 300)
+        .frame(width: 450, height: 350)
         .onAppear {
-            // Force refresh the WiFi status when the view appears
             _ = wifiManager.isWiFiEnabled()
         }
     }

@@ -1,0 +1,46 @@
+//
+//  Localizable.strings
+//  ToggleWifi
+//
+//  Created by Fahid Nasir on 7/12/25.
+//
+
+/* Menu Bar */
+"menu.autoWiFi" = "Automatisches WLAN aktivieren";
+"menu.settings" = "Einstellungen...";
+"menu.about" = "Über Toggle WiFi";
+"menu.quit" = "Beenden";
+
+/* Notifications */
+"notification.wifiOn" = "WLAN eingeschaltet";
+"notification.wifiOff" = "WLAN ausgeschaltet";
+"notification.ethernetConnected" = "Ethernet verbunden";
+"notification.ethernetDisconnected" = "Ethernet getrennt";
+
+/* Settings */
+"settings.title" = "Toggle WiFi Einstellungen";
+"settings.autoWiFiToggle" = "Automatisches WLAN-Umschalten aktivieren";
+"settings.autoWiFiHelp" = "WLAN automatisch ausschalten, wenn Ethernet verbunden ist";
+"settings.launchAtLogin" = "Bei Anmeldung starten";
+"settings.launchAtLoginHelp" = "Toggle WiFi beim Anmelden starten";
+"settings.language" = "Sprache";
+"settings.status" = "Status";
+"settings.ethernet" = "Ethernet:";
+"settings.wifi" = "WLAN:";
+"settings.connected" = "Verbunden";
+"settings.disconnected" = "Getrennt";
+"settings.on" = "Ein";
+"settings.off" = "Aus";
+
+/* About */
+"about.title" = "Toggle WiFi";
+"about.version" = "Version 1.0";
+"about.description" = "Schaltet WLAN automatisch basierend auf Ethernet-Status um";
+"about.ok" = "OK";
+
+/* Language Names */
+"language.english" = "English";
+"language.german" = "Deutsch";
+
+/* Main Content */
+"main.title" = "Toggle WiFi läuft in der Menüleiste";

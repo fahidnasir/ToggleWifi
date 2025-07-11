@@ -14,6 +14,7 @@ class MenuBarManager: NSObject, NetworkMonitorDelegate {
     private var wifiManager: WiFiManager
     private var networkMonitor: NetworkMonitor
     private var settingsWindow: NSWindow?
+    private let localizationManager = LocalizationManager.shared
     
     @AppStorage("autoWiFiEnabled") private var autoWiFiEnabled = true
     @AppStorage("launchAtLogin") private var launchAtLogin = false
@@ -22,6 +23,18 @@ class MenuBarManager: NSObject, NetworkMonitorDelegate {
         self.wifiManager = wifiManager
         self.networkMonitor = networkMonitor
         super.init()
+        
+        // Listen for language changes
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(languageChanged),
+            name: Notification.Name("LanguageChanged"),
+            object: nil
+        )
+    }
+    
+    @objc private func languageChanged() {
+        setupMenu()
     }
     
     func setupMenuBar() {
@@ -42,7 +55,6 @@ class MenuBarManager: NSObject, NetworkMonitorDelegate {
         if event.type == .leftMouseUp {
             toggleWiFiManually()
         } else if event.type == .rightMouseUp {
-            // For right-click, let the menu handle itself
             return
         }
     }
@@ -54,24 +66,40 @@ class MenuBarManager: NSObject, NetworkMonitorDelegate {
     private func createMenu() -> NSMenu {
         let menu = NSMenu()
         
-        let autoToggleItem = NSMenuItem(title: "Enable Auto Wi-Fi", action: #selector(toggleAutoWiFi), keyEquivalent: "")
+        let autoToggleItem = NSMenuItem(
+            title: localizationManager.localizedString("menu.autoWiFi"),
+            action: #selector(toggleAutoWiFi),
+            keyEquivalent: ""
+        )
         autoToggleItem.target = self
         autoToggleItem.state = autoWiFiEnabled ? .on : .off
         menu.addItem(autoToggleItem)
         
         menu.addItem(NSMenuItem.separator())
         
-        let settingsItem = NSMenuItem(title: "Settings...", action: #selector(openSettings), keyEquivalent: ",")
+        let settingsItem = NSMenuItem(
+            title: localizationManager.localizedString("menu.settings"),
+            action: #selector(openSettings),
+            keyEquivalent: ","
+        )
         settingsItem.target = self
         menu.addItem(settingsItem)
         
-        let aboutItem = NSMenuItem(title: "About ToggleWiFi", action: #selector(showAbout), keyEquivalent: "")
+        let aboutItem = NSMenuItem(
+            title: localizationManager.localizedString("menu.about"),
+            action: #selector(showAbout),
+            keyEquivalent: ""
+        )
         aboutItem.target = self
         menu.addItem(aboutItem)
         
         menu.addItem(NSMenuItem.separator())
         
-        let quitItem = NSMenuItem(title: "Quit", action: #selector(quit), keyEquivalent: "q")
+        let quitItem = NSMenuItem(
+            title: localizationManager.localizedString("menu.quit"),
+            action: #selector(quit),
+            keyEquivalent: "q"
+        )
         quitItem.target = self
         menu.addItem(quitItem)
         
@@ -90,18 +118,17 @@ class MenuBarManager: NSObject, NetworkMonitorDelegate {
             let hostingController = NSHostingController(rootView: settingsView)
             
             settingsWindow = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 400, height: 300),
+                contentRect: NSRect(x: 0, y: 0, width: 450, height: 350),
                 styleMask: [.titled, .closable, .miniaturizable],
                 backing: .buffered,
                 defer: false
             )
             
-            settingsWindow?.title = "ToggleWiFi Settings"
+            settingsWindow?.title = localizationManager.localizedString("settings.title")
             settingsWindow?.contentViewController = hostingController
             settingsWindow?.center()
             settingsWindow?.isReleasedWhenClosed = false
             
-            // Handle window closing
             NotificationCenter.default.addObserver(
                 forName: NSWindow.willCloseNotification,
                 object: settingsWindow,
@@ -117,10 +144,10 @@ class MenuBarManager: NSObject, NetworkMonitorDelegate {
     
     @objc private func showAbout() {
         let alert = NSAlert()
-        alert.messageText = "ToggleWiFi"
-        alert.informativeText = "Version 1.0\nAutomatically toggles Wi-Fi based on Ethernet status"
+        alert.messageText = localizationManager.localizedString("about.title")
+        alert.informativeText = "\(localizationManager.localizedString("about.version"))\n\(localizationManager.localizedString("about.description"))"
         alert.alertStyle = .informational
-        alert.addButton(withTitle: "OK")
+        alert.addButton(withTitle: localizationManager.localizedString("about.ok"))
         alert.runModal()
     }
     
@@ -133,7 +160,9 @@ class MenuBarManager: NSObject, NetworkMonitorDelegate {
         wifiManager.setWiFiEnabled(!currentState)
         updateIcon()
         
-        let message = currentState ? "Wi-Fi turned off" : "Wi-Fi turned on"
+        let message = currentState ?
+            localizationManager.localizedString("notification.wifiOff") :
+            localizationManager.localizedString("notification.wifiOn")
         showNotification(title: "Wi-Fi Status", message: message)
     }
     
@@ -170,12 +199,18 @@ class MenuBarManager: NSObject, NetworkMonitorDelegate {
         if isConnected {
             if wifiManager.isWiFiEnabled() {
                 wifiManager.setWiFiEnabled(false)
-                showNotification(title: "Ethernet Connected", message: "Wi-Fi turned off")
+                showNotification(
+                    title: localizationManager.localizedString("notification.ethernetConnected"),
+                    message: localizationManager.localizedString("notification.wifiOff")
+                )
             }
         } else {
             if !wifiManager.isWiFiEnabled() {
                 wifiManager.setWiFiEnabled(true)
-                showNotification(title: "Ethernet Disconnected", message: "Wi-Fi turned on")
+                showNotification(
+                    title: localizationManager.localizedString("notification.ethernetDisconnected"),
+                    message: localizationManager.localizedString("notification.wifiOn")
+                )
             }
         }
         

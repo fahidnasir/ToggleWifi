@@ -1,0 +1,46 @@
+//
+//  Localizable.strings
+//  Toggle Wifi
+//
+//  Created by Fahid Nasir on 7/12/25.
+//
+
+/* Menu Bar */
+"menu.autoWiFi" = "Enable Auto Wi-Fi";
+"menu.settings" = "Settings...";
+"menu.about" = "About Toggle WiFi";
+"menu.quit" = "Quit";
+
+/* Notifications */
+"notification.wifiOn" = "Wi-Fi turned on";
+"notification.wifiOff" = "Wi-Fi turned off";
+"notification.ethernetConnected" = "Ethernet Connected";
+"notification.ethernetDisconnected" = "Ethernet Disconnected";
+
+/* Settings */
+"settings.title" = "Toggle Wifi Settings";
+"settings.autoWiFiToggle" = "Enable Auto Wi-Fi Toggle";
+"settings.autoWiFiHelp" = "Automatically turn Wi-Fi off when Ethernet is connected";
+"settings.launchAtLogin" = "Launch at Login";
+"settings.launchAtLoginHelp" = "Start Toggle Wifi when you log in";
+"settings.language" = "Language";
+"settings.status" = "Status";
+"settings.ethernet" = "Ethernet:";
+"settings.wifi" = "Wi-Fi:";
+"settings.connected" = "Connected";
+"settings.disconnected" = "Disconnected";
+"settings.on" = "On";
+"settings.off" = "Off";
+
+/* About */
+"about.title" = "Toggle Wifi";
+"about.version" = "Version 1.0";
+"about.description" = "Automatically toggles Wi-Fi based on Ethernet status";
+"about.ok" = "OK";
+
+/* Language Names */
+"language.english" = "English";
+"language.german" = "Deutsch";
+
+/* Main Content */
+"main.title" = "Toggle Wifi is running in the menu bar";
