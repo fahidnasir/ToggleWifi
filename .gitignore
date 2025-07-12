@@ -112,3 +112,9 @@ iOSInjectionProject/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# DMG output and build artifacts
+/release/
+/build/
+/scripts/dmg-root/
+ToggleWifi.xcodeproj/xcuserdata/

@@ -27,6 +27,32 @@
 - **🎯 Manual Override**: Click to manually toggle Wi-Fi when needed
 - **📊 Real-time Status**: Live connection status monitoring
 
+## Screenshots
+
+### Application Workflow
+
+![Workflow Diagram](Screens/toggle-wifi_workflow.jpeg)
+
+### Settings Screen
+
+#### English
+
+![Settings English](Screens/settings_english.jpg)
+
+#### German
+
+![Settings German](Screens/settings_german.jpg)
+
+### Menubar
+
+![App Menubar](Screens/app_menubar.jpg)
+
+### Notifications upon status change
+
+![Notifications](Screens/notifications.jpg)
+
+---
+
 ## 🖥️ System Requirements
 
 - macOS 14.0 or later
@@ -60,6 +86,12 @@
 Visit the Releases page
 Download the latest .dmg file
 Install the application
+
+    ⚠️ Note: macOS may show a security warning when opening this app for the first time.
+
+    Option 1: Right-click on the App Icon in /Applications → Open → Allow Anyway.
+
+    Option 2: Open "Privacy & Security" in Mac settings window and scroll down to the bottom and last security failed app will appear there and you can Allow Anyway.
 
 ### 🎯 Usage
 

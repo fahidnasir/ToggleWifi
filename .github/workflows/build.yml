@@ -1,0 +1,65 @@
+name: Build & Release ToggleWifi
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build & Package DMG
+    runs-on: macos-15
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🛠 Set Xcode Version
+        run: sudo xcode-select -s /Applications/Xcode_16.4.app
+
+      - name: 🔢 Get App Version
+        id: get_version
+        run: |
+          VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" ToggleWifi/Info.plist)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: 🔨 Build ToggleWifi.app
+        run: |
+          DERIVED_DATA=build/DerivedData
+          BUILD_DIR=build/Release
+          mkdir -p scripts/dmg-root release
+
+          xcodebuild -project ToggleWifi.xcodeproj \
+            -scheme ToggleWifi \
+            -configuration Release \
+            -derivedDataPath "$DERIVED_DATA" \
+            CONFIGURATION_BUILD_DIR="$BUILD_DIR" \
+            -destination 'platform=macOS,arch=arm64' \
+            clean build
+
+          cp -R "$BUILD_DIR/ToggleWifi.app" scripts/dmg-root/
+
+      - name: 📦 Install create-dmg
+        run: brew install create-dmg
+
+      - name: 📀 Create DMG
+        run: |
+          DMG_NAME="ToggleWifi-v${{ env.VERSION }}.dmg"
+          create-dmg \
+            --volname "ToggleWifi ${{ env.VERSION }}" \
+            --window-pos 200 120 \
+            --window-size 500 300 \
+            --icon-size 100 \
+            --icon "ToggleWifi.app" 125 150 \
+            --hide-extension "ToggleWifi.app" \
+            --app-drop-link 375 150 \
+            "release/$DMG_NAME" \
+            "scripts/dmg-root"
+
+      - name: 🚀 Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/ToggleWifi-v${{ env.VERSION }}.dmg
