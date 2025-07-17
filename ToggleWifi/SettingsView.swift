@@ -11,6 +11,7 @@ import ServiceManagement
 struct SettingsView: View {
     @AppStorage("autoWiFiEnabled") private var autoWiFiEnabled = true
     @AppStorage("launchAtLogin") private var launchAtLogin = false
+    @AppStorage("notificationsEnabled") private var notificationsEnabled = true
     
     @ObservedObject var networkMonitor: NetworkMonitor
     @ObservedObject var wifiManager: WiFiManager
@@ -35,6 +36,9 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 12) {
                 Toggle(localizationManager.localizedString("settings.autoWiFiToggle"), isOn: $autoWiFiEnabled)
                     .help(localizationManager.localizedString("settings.autoWiFiHelp"))
+                
+                Toggle(localizationManager.localizedString("settings.enableNotifications"), isOn: $notificationsEnabled)
+                    .help(localizationManager.localizedString("settings.enableNotificationsHelp"))
                 
                 Toggle(localizationManager.localizedString("settings.launchAtLogin"), isOn: $launchAtLogin)
                     .help(localizationManager.localizedString("settings.launchAtLoginHelp"))

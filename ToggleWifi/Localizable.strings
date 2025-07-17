@@ -23,6 +23,8 @@
 "settings.autoWiFiHelp" = "Automatically turn Wi-Fi off when Ethernet is connected";
 "settings.launchAtLogin" = "Launch at Login";
 "settings.launchAtLoginHelp" = "Start Toggle Wifi when you log in";
+"enableNotifications" = "Enable Notifications";
+"enableNotificationsHelp" = "Enable/Disable notifications about status change";
 "settings.language" = "Language";
 "settings.status" = "Status";
 "settings.ethernet" = "Ethernet:";

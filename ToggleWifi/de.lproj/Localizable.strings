@@ -23,6 +23,8 @@
 "settings.autoWiFiHelp" = "WLAN automatisch ausschalten, wenn Ethernet verbunden ist";
 "settings.launchAtLogin" = "Bei Anmeldung starten";
 "settings.launchAtLoginHelp" = "Toggle WiFi beim Anmelden starten";
+"settings.enableNotifications" = "Benachrichtigungen aktivieren";
+"settings.enableNotificationsHelp" = "Benachrichtigungen über Statusänderungen aktivieren/deaktivieren";
 "settings.language" = "Sprache";
 "settings.status" = "Status";
 "settings.ethernet" = "Ethernet:";

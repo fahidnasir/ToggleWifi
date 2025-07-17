@@ -182,6 +182,9 @@ class MenuBarManager: NSObject, NetworkMonitorDelegate {
     }
     
     private func showNotification(title: String, message: String) {
+        let notificationsEnabled = UserDefaults.standard.bool(forKey: "notificationsEnabled")
+        guard notificationsEnabled else { return }
+        
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = message
