@@ -1,0 +1,49 @@
+//
+//  Localizable.strings (Chinese)
+//  ToggleWifi
+//
+//  Created by Jack.Y on 16/09/25.
+//
+
+/* Menu Bar */
+"menu.autoWiFi" = "启用 Wi-Fi 自动切换";
+"menu.settings" = "设置...";
+"menu.about" = "关于 Toggle WiFi";
+"menu.quit" = "退出";
+
+/* Notifications */
+"notification.wifiOn" = "Wi-Fi 已开启";
+"notification.wifiOff" = "Wi-Fi 已关闭";
+"notification.ethernetConnected" = "以太网已连接";
+"notification.ethernetDisconnected" = "以太网已断开";
+
+/* Settings */
+"settings.title" = "Toggle Wifi 设置";
+"settings.autoWiFiToggle" = "启用 Wi-Fi 自动切换";
+"settings.autoWiFiHelp" = "当以太网连接时自动关闭 Wi-Fi";
+"settings.launchAtLogin" = "开机自启动";
+"settings.launchAtLoginHelp" = "登录时启动 Toggle Wifi";
+"settings.enableNotifications" = "启用通知";
+"settings.enableNotificationsHelp" = "启用/禁用状态变更通知";
+"settings.language" = "语言";
+"settings.status" = "状态";
+"settings.ethernet" = "以太网：";
+"settings.wifi" = "Wi-Fi：";
+"settings.connected" = "已连接";
+"settings.disconnected" = "已断开";
+"settings.on" = "开启";
+"settings.off" = "关闭";
+
+/* About */
+"about.title" = "Toggle Wifi";
+"about.version" = "版本 1.0";
+"about.description" = "根据以太网状态自动切换 Wi-Fi";
+"about.ok" = "确定";
+
+/* Language Names */
+"language.english" = "English";
+"language.german" = "Deutsch";
+"language.chinese" = "中文";
+
+/* Main Content */
+"main.title" = "Toggle Wifi 正在菜单栏中运行";

@@ -19,7 +19,8 @@ struct SettingsView: View {
     
     private let availableLanguages = [
         ("en", "language.english"),
-        ("de", "language.german")
+        ("de", "language.german"),
+        ("zh-Hans", "language.chinese")
     ]
     
     init(networkMonitor: NetworkMonitor, wifiManager: WiFiManager) {
