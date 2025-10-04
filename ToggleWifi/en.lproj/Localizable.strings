@@ -43,6 +43,7 @@
 /* Language Names */
 "language.english" = "English";
 "language.german" = "Deutsch";
+"language.chinese" = "中文";
 
 /* Main Content */
 "main.title" = "Toggle Wifi is running in the menu bar";
