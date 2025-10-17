@@ -1,5 +1,8 @@
 # ToggleWiFi
 
+![Workflow Diagram](Screens/app-togglewifi.png)
+
+
 <div align="center">
   <img src="https://img.shields.io/badge/Platform-macOS-blue.svg" alt="Platform">
   <img src="https://img.shields.io/badge/Language-Swift-orange.svg" alt="Language">
@@ -31,6 +34,7 @@
 
 ### Application Workflow
 
+![Workflow Diagram](Screens/app-togglewifi2.png)
 ![Workflow Diagram](Screens/toggle-wifi_workflow.jpeg)
 
 ### Settings Screen
